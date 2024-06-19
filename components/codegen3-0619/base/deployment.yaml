@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:  
+    tad.gitops.set/image: ".spec.template.spec.containers[0].image"
+    tad.gitops.get/image: ".spec.template.spec.containers[0].image"
+    tad.gitops.set/replicas: ".spec.replicas"
+    tad.gitops.get/replicas: ".spec.replicas" 
+  labels: 
+    app.kubernetes.io/instance: codegen3-0619
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name:  codegen3-0619
+    app.kubernetes.io/part-of: codegen3-0619  
+  name: codegen3-0619
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance:  codegen3-0619 
+  template:
+    metadata: 
+      labels:
+        app.kubernetes.io/instance:  codegen3-0619
+    spec:
+      containers:
+      - env:
+        - name: MODEL_ENDPOINT
+          value: http://codegen3-0619-model-server:8001
+        image:  quay.io/yangcao/chatbot:latest
+        name: app-inference
+        ports:
+        - containerPort: 8501
+        securityContext:
+          runAsNonRoot: true
